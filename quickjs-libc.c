@@ -1774,11 +1774,55 @@ static JSValue js_net_listen(JSContext *ctx, JSValueConst this_val,
     return js_return_int64_wrap(ctx, ret);
 }
 
+static JSValue js_net_send(JSContext *ctx, JSValueConst this_val,
+                           int argc, JSValueConst *argv)
+{
+    int len, flags, ret;
+    size_t buf_size;
+    uint8_t *buf;
+    if (JS_ToInt32(ctx, &sockfd, argv[0]))
+        return JS_EXCEPTION;
+    buf = JS_GetArrayBuffer(ctx, &buf_size, argv[1]);
+    if (!buf)
+        return JS_EXCEPTION;
+    if (len > buf_size)
+        return JS_ThrowRangeError(ctx, "read/write array buffer overflow");
+    if (JS_ToInt32(ctx, &len, argv[2]))
+        return JS_EXCEPTION;
+    if (JS_ToInt32(ctx, &flags, argv[1]))
+        return JS_EXCEPTION;
+    ret = recv(sockfd, buf, len, flags);
+    return js_return_int64_wrap(ctx, ret);
+}
+
+static JSValue js_net_recv(JSContext *ctx, JSValueConst this_val,
+                           int argc, JSValueConst *argv)
+{
+    int len, flags, ret;
+    size_t buf_size;
+    uint8_t *buf;
+    if (JS_ToInt32(ctx, &sockfd, argv[0]))
+        return JS_EXCEPTION;
+    buf = JS_GetArrayBuffer(ctx, &buf_size, argv[1]);
+    if (!buf)
+        return JS_EXCEPTION;
+    if (len > buf_size)
+        return JS_ThrowRangeError(ctx, "read/write array buffer overflow");
+    if (JS_ToInt32(ctx, &len, argv[2]))
+        return JS_EXCEPTION;
+    if (JS_ToInt32(ctx, &flags, argv[1]))
+        return JS_EXCEPTION;
+    ret = recv(sockfd, buf, len, flags);
+    return js_return_int64_wrap(ctx, ret);
+}
+
 static const JSCFunctionListEntry js_net_funcs[] = {
     JS_CFUNC_DEF("socket", 2, js_net_socket ),
     OS_FLAG(AF_INET),
     OS_FLAG(SOCK_STREAM),
     JS_CFUNC_DEF("accept", 2, js_net_accept ),
+    JS_CFUNC_DEF("send", 2, js_net_send ),
+    JS_CFUNC_DEF("recv", 2, js_net_recv ),
     JS_CFUNC_DEF("bind", 2, js_net_bind ),
     JS_CFUNC_DEF("listen", 2, js_net_listen ),
     JS_CFUNC_DEF("connect", 2, js_net_connect ),
