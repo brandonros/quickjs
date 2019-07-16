@@ -1791,7 +1791,7 @@ static JSValue js_net_send(JSContext *ctx, JSValueConst this_val,
         return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &flags, argv[3]))
         return JS_EXCEPTION;
-    ret = recv(sockfd, buf, len, flags);
+    ret = send(sockfd, buf, len, flags);
     return js_return_int64_wrap(ctx, ret);
 }
 
