@@ -1785,12 +1785,12 @@ static JSValue js_net_send(JSContext *ctx, JSValueConst this_val,
     buf = JS_GetArrayBuffer(ctx, &buf_size, argv[1]);
     if (!buf)
         return JS_EXCEPTION;
-    if (len > buf_size)
-        return JS_ThrowRangeError(ctx, "read/write array buffer overflow");
     if (JS_ToInt32(ctx, &len, argv[2]))
         return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &flags, argv[3]))
         return JS_EXCEPTION;
+    if (len > buf_size)
+        return JS_ThrowRangeError(ctx, "read/write array buffer overflow");
     ret = send(sockfd, buf, len, flags);
     return js_return_int64_wrap(ctx, ret);
 }
@@ -1806,12 +1806,12 @@ static JSValue js_net_recv(JSContext *ctx, JSValueConst this_val,
     buf = JS_GetArrayBuffer(ctx, &buf_size, argv[1]);
     if (!buf)
         return JS_EXCEPTION;
-    if (len > buf_size)
-        return JS_ThrowRangeError(ctx, "read/write array buffer overflow");
     if (JS_ToInt32(ctx, &len, argv[2]))
         return JS_EXCEPTION;
     if (JS_ToInt32(ctx, &flags, argv[3]))
         return JS_EXCEPTION;
+    if (len > buf_size)
+        return JS_ThrowRangeError(ctx, "read/write array buffer overflow");
     ret = recv(sockfd, buf, len, flags);
     return js_return_int64_wrap(ctx, ret);
 }
